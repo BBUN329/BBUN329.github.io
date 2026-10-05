@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BBUN · 게임 개발자</title>
+<meta name="description" content="게임을 만드는 개발자 BBUN">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #e8edf4; --ink: #16213a; --muted: #55607a; --line: #c5cddb;
+    --hit: #2e9d6a; --near: #e2b13c; --miss: #8b95a7; --tile-ink: #fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #11172a; --ink: #e8edf7; --muted: #9aa5bf; --line: #2a3452; --hit: #3aae7b; --miss: #5d6985; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 400 1.0625rem/1.75 "IBM Plex Sans KR", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 680px; margin: 0 auto; padding: 72px 24px 56px; }
+  h1, h2, .tile { font-family: "Black Han Sans", "IBM Plex Sans KR", sans-serif; font-weight: 400; }
+  a { color: inherit; text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+  a:focus-visible, .tiles:focus-visible { outline: 3px solid var(--near); outline-offset: 4px; border-radius: 4px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  /* 타일 */
+  .tiles { display: flex; gap: 10px; margin: 0 0 32px; padding: 0; background: none; border: 0; cursor: pointer; color: inherit; }
+  .tile {
+    --size: clamp(72px, 22vw, 112px);
+    width: var(--size); height: var(--size); display: grid; place-items: center;
+    font-size: calc(var(--size) * .55); line-height: 1; color: var(--ink);
+    border: 3px solid var(--line); border-radius: 6px; background: transparent;
+    animation: flip .7s ease-in-out backwards, reveal .7s ease-in-out backwards;
+    animation-delay: calc(var(--i) * .35s + .3s);
+  }
+  .tile.hit  { --c: var(--hit);  background: var(--c); border-color: var(--c); color: var(--tile-ink); }
+  .tile.near { --c: var(--near); background: var(--c); border-color: var(--c); color: #1f1a08; }
+  .tile.miss { --c: var(--miss); background: var(--c); border-color: var(--c); color: var(--tile-ink); }
+  .tiles.replay .tile { animation: none; }
+  @keyframes flip { 0%, 100% { transform: rotateX(0); } 50% { transform: rotateX(90deg); } }
+  /* 뒤집히는 중간(타일이 납작할 때) 색을 바꾼다 */
+  @keyframes reveal {
+    0%, 49% { background: transparent; border-color: var(--line); color: var(--ink); }
+    50%, 100% { background: var(--c); }
+  }
+
+  h1 { font-size: 0; margin: 0; }
+  .lead { font-size: 1.375rem; line-height: 1.5; margin: 0 0 12px; font-weight: 500; max-width: 24em; }
+  .sub { color: var(--muted); margin: 0; max-width: 32em; }
+
+  section { margin-top: 72px; }
+  h2 { font-size: 1.75rem; margin: 0 0 20px; letter-spacing: -.01em; }
+  .rows { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+  .rows > li { border-bottom: 1px solid var(--line); }
+  .row { display: grid; grid-template-columns: 8.5rem 1fr; gap: 4px 24px; padding: 18px 0; }
+  .row dt, .row .k { color: var(--muted); }
+  .row dd { margin: 0; }
+
+  .app { display: flex; gap: 20px; align-items: center; padding: 22px 0; }
+  .mini { display: flex; gap: 4px; flex: none; }
+  .mini i { width: 26px; height: 26px; border-radius: 3px; background: var(--c); }
+  .app h3 { margin: 0; font-size: 1.125rem; font-weight: 500; }
+  .app p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+  footer { margin-top: 80px; color: var(--muted); font-size: .875rem; }
+
+  @media (max-width: 520px) {
+    main { padding-top: 48px; }
+    .row { grid-template-columns: 1fr; }
+    .app { align-items: flex-start; flex-direction: column; gap: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tile { animation: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>BBUN</h1>
+  <button class="tiles" type="button" aria-label="BBUN. 누르면 타일이 다시 뒤집힙니다">
+    <span class="tile hit"  style="--i:0" aria-hidden="true">ㅃ</span>
+    <span class="tile near" style="--i:1" aria-hidden="true">ㅓ</span>
+    <span class="tile miss" style="--i:2" aria-hidden="true">ㄴ</span>
+  </button>
+  <p class="lead">게임을 만듭니다.</p>
+  <p class="sub">Unity로 개발하는 인디 개발자 BBUN입니다. 오래 즐길 수 있는 게임을 지향합니다.</p>
+
+  <section id="apps">
+    <h2>만든 앱</h2>
+    <ul class="rows">
+      <li>
+        <div class="app">
+          <div class="mini" aria-hidden="true">
+            <i style="--c:var(--hit)"></i><i style="--c:var(--near)"></i><i style="--c:var(--miss)"></i><i style="--c:var(--hit)"></i>
+          </div>
+          <div>
+            <h3>한글 워들</h3>
+            <p>한글 단어 맞추기 게임</p>
+            <p><a href="https://play.google.com/store/apps/details?id=com.CHS.Korean_Wordle" target="_blank" rel="noopener">Google Play에서 받기</a> · <a href="korean-wordle/privacy.html">개인정보처리방침</a></p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section id="contact">
+    <h2>문의</h2>
+    <p>제휴, 광고, 버그 제보는 메일로 보내 주세요.<br><a href="mailto:bbunsun874@gmail.com">bbunsun874@gmail.com</a></p>
+  </section>
+
+  <footer>© 2026 BBUN</footer>
+</main>
+<script>
+  const t = document.querySelector('.tiles');
+  t.onclick = () => { t.classList.add('replay'); void t.offsetWidth; t.classList.remove('replay'); };
+</script>
+</body>
+</html>
